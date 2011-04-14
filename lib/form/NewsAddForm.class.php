@@ -13,9 +13,9 @@ class NewsAddForm extends MessageForm {
         public $templateName = 'newsAdd';
         //public $useCaptcha = NEWS_CREATE_USE_CAPTCHA;
         private $minimalSummaryLength = 0;//NEWS_DEFAULT_SUMMARY_MIN_CHAR_LENTGH;
-        private $maximalSummaryLength = 100000000;//NEWS_DEFAULT_SUMMARY_MAX_CHAR_LENTGH;
+        private $maximalSummaryLength = 1000000;//NEWS_DEFAULT_SUMMARY_MAX_CHAR_LENTGH;
         private $minimalTextLength = 1;//NEWS_DEFAULT_TEXT_MIN_CHAR_LENTGH;
-        private $maximalTextLength = 100000000;//NEWS_DEFAULT_TEXT_MAX_CHAR_LENTGH;
+        private $maximalTextLength = 1000000;//NEWS_DEFAULT_TEXT_MAX_CHAR_LENTGH;
 
         public $newsID = null;
         public $preview, $send;
@@ -59,7 +59,7 @@ class NewsAddForm extends MessageForm {
 		//$this->loadAvailableLanguages();
 
 		// get max text length
-		$this->maximalTextLength = WCF::getUser()->getPermission('user.library.maxChapterLength');
+		//$this->maximalTextLength = WCF::getUser()->getPermission('user.library.maxChapterLength');
 
 		// show form
 		parent::show();
@@ -129,7 +129,7 @@ class NewsAddForm extends MessageForm {
 		// username
 		$this->validateAuthorname();
 
-		//story- and chaptertitle
+		//title
 		$this->validateTitle();
 
 		//text and summary

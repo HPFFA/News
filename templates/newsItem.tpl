@@ -1,4 +1,3 @@
-
 {if $item|isset}
 
     <div class="border container-1">

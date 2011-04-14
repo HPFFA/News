@@ -67,7 +67,7 @@
                                     </div>
                             </div>
 
-                            {if MODULE_TAGGING && STORY_ENABLE_TAGS}{include file='tagAddBit'}{/if}
+                            
 
                             <div class="formElement">
                                 <div class="formFieldLabel">
@@ -118,7 +118,7 @@
                                 </div>
                             {/if}
                         </fieldset>
-			{include file='messageFormTabs'}
+			
                 	{include file='captcha'}
                         <div class="formSubmit">
                                 <input type="submit" name="send" accesskey="s" value="{lang}wcf.global.button.submit{/lang}" tabindex="{counter name='tabindex'}" />
