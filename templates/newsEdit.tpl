@@ -27,11 +27,6 @@
 		</div>
 	</div>
 
-	{if $debug}
-		<p class="debug">
-			{$debug}
-		</p>
-	{/if}
 	{if $errorField}
                 {if $errorField == 'news'}
                     <p class="error">
@@ -58,21 +53,19 @@
                             <legend>de.hpffa.news.editContent</legend>
 
 
-                            <div class="formElement{if $errorField == 'title'} formError{/if}">
+                            <div class="formElement{if $errorField == 'subject'} formError{/if}">
                                     <div class="formFieldLabel">
-                                            <label for="title">{lang}de.hpffa.news.title{/lang}</label>
+                                            <label for="subject">{lang}de.hpffa.news.subject{/lang}</label>
                                     </div>
                                     <div class="formField">
-                                            <input type="text" class="inputText" name="title" id="title" value="{@$title}" tabindex="{counter name='tabindex'}" />
-                                            {if $errorField == 'title'}
+                                            <input type="text" class="inputText" name="subject" id="subject" value="{@$subject}" tabindex="{counter name='tabindex'}" />
+                                            {if $errorField == 'subject'}
                                                     <p class="innerError">
                                                             {if $errorType == 'empty'}{lang}wcf.global.error.empty{/lang}{/if}
                                                     </p>
                                             {/if}
                                     </div>
                             </div>
-
-                            {if MODULE_TAGGING && STORY_ENABLE_TAGS}{include file='tagAddBit'}{/if}
 
                             <div class="formElement">
                                 <div class="formFieldLabel">
@@ -139,7 +132,7 @@
                                 </div>
                             {/if}
                         </fieldset>
-			{include file='messageFormTabs'}
+			
                 	{include file='captcha'}
                         <div class="formSubmit">
                                 <input type="submit" name="send" accesskey="s" value="{lang}wcf.global.button.submit{/lang}" tabindex="{counter name='tabindex'}" />

@@ -10,7 +10,7 @@ class NewsEditor extends News {
 
         /**
          * creates a news item which is not in the database
-         * @param <type> $title
+         * @param <type> $subject
          * @param <type> $summary
          * @param <type> $text
          * @param <type> $authorname
@@ -19,43 +19,39 @@ class NewsEditor extends News {
          * @param <type> $enableBBCodes
          * @return News
          */
-        static public function createPreview($title, $summary, $text, $authorname ,$enableSmilies = 1, $enableHtml = 0, $enableBBCodes= 1) {
+        static public function createPreview($subject, $summary, $text, $authorname ,$enableSmilies = 1, $enableHtml = 0, $enableBBCodes= 1) {
 
             $news = new News(null, array(
-                'newsID' => 0,
-                'title' => $title,
-                'summary' => $summary,
-                'text' => $text,
-                'authorname' => $authorname,
+                'newsID' 		=> 0,
+                'subject' 		=> $subject,
+                'summary' 		=> $summary,
+                'text' 			=> $text,
+                'authorname' 	=> $authorname,
                 'enableSmilies' => $enableSmilies,
-                'enableHtml' => $enableHtml,
+                'enableHtml' 	=> $enableHtml,
                 'enableBBCodes' => $enableBBCodes));
             return $news;
         }
 
         /**
          * looks for a news item in the data base with the given content</br>
-         * a item is identical only if title and text or title and summary equals
-         * @param <string> $title
+         * a item is treated as identical when
+		 *  - subject and text equals
+		 *  - subject and summary equals
+         * @param <string> $subject
          * @param <string> $summary
          * @param <string> $text
          * @param <integer> $newsID default 0
          */
-        static public function test($title, $summary, $text, $newsID = 0){
-                //$hash = StringUtil::getHash(($newsID ? newsID : '') . $title . $summary . $text);
-                //$sql = "SELECT  newsID
-                //      FROM   wcf".WCF_N."_post_hash
-                //      WHERE   messageHash = '".$hash."'";
-                $sqlBase = "SELECT newsID
-                        FROM wcf".WCF_N."_news
-                        WHERE ";
-                $sql = $sqlBase."title = '".$title."' and text = '".$text."'";
-                $row = WCF::getDB()->getFirstRow($sql);
+        static public function test($subject, $summary, $text, $newsID = 0){
+                $selectNewsID = "SELECT newsID FROM wcf".WCF_N."_news ";
+                $row = WCF::getDB()->getFirstRow(
+                	$selectNewsID." WHERE subject = '".$subject."' and text = '".$text."'");
                 if (!empty($row['newsID'])){
                         return $row['newsID'];
                 }
-                $sql = $sqlBase."title = '".$title."' and summary = '".$summary."'";
-                $row = WCF::getDB()->getFirstRow($sql);
+                $row = WCF::getDB()->getFirstRow(
+                	$selectNewsID." WHERE subject = '".$subject."' and summary = '".$summary."'");
                 if (!empty($row['newsID'])){
                         return $row['newsID'];
                 }
@@ -66,7 +62,7 @@ class NewsEditor extends News {
          * creates a new news item for in database
          * @param <type> $authorID
          * @param <type> $authorname
-         * @param <type> $title
+         * @param <type> $subject
          * @param <type> $text
          * @param <type> $options
          * @param <type> $summary
@@ -82,22 +78,20 @@ class NewsEditor extends News {
          * @param <type> $ipAddress
          * @return NewsEditor the new NewsItem
          */
-        static public function create($authorID, $authorname, $title,  $text, $options, $summary = null, $isDeleted = null, $isDisabled = 0, $lastEditTime = null, $editCount = 0, $editReason = null, $deleteTime = null, $deletedBy = null, $deletedByID = null, $deleteReason = null, $ipAddress = null){
+        static public function create($authorID, $authorname, $subject,  $text, $summary = "", $options, $isDeleted = null, $isDisabled = 0, $lastEditTime = null, $editCount = 0, $editReason = null, $deleteTime = null, $deletedBy = null, $deletedByID = null, $deleteReason = null, $ipAddress = null){
+        		
                 $additionalInformation = array(
-                        'summary' => $summary,
-                        'time' => TIME_NOW,
-                        'enableHtml' => $options['enableHtml'],
+                        'time' 			=> TIME_NOW,
+                        'enableHtml' 	=> $options['enableHtml'],
                         //'enableSmilies' => $options['enableSmilies'],
                         'enableBBCodes' => $options['enableBBCodes'],
-                        'ipAddress' => ($ipAddress ? $ipAddress : WCF::getSession()->ipAddress),
-                        'isDisabled' => $isDisabled,
-                        'editCount' => $editCount,
-                        'everEnabled' => ($isDisabled ? 0 : 1)
+                        'ipAddress' 	=> ($ipAddress ? $ipAddress : WCF::getSession()->ipAddress),
+                        'isDisabled' 	=> $isDisabled,
+                        'editCount' 	=> $editCount,
+                        'everEnabled' 	=> ($isDisabled ? 0 : 1)
                 );
-                if ($summary !== null){
-                        $additionalInformation['summary'] = $summary;
-                }
-                $newsID = self::insert($authorID,$authorname,$title,$text,$additionalInformation);
+				
+                $newsID = self::insert($authorID,$authorname,$subject,$text,$summary,$additionalInformation);
 
                 return new NewsEditor($newsID);
         }
@@ -106,24 +100,28 @@ class NewsEditor extends News {
          * inserts a new row in the news table
          * @param integer $authorID
          * @param string $authorname
-         * @param string $title
+         * @param string $subject
          * @param string $text
          * @param string $additionalInformation (like summary, enableHtml, ...)
          * @return integer the ID of the new row
          */
-        static public function insert($authorID,$authorname,$title,$text,$additionalInformation = array()){
-                $keys =         'authorID,authorname,title,text';
-                $values =       "'".escapeString($authorID)."',".
-                                "'".escapeString($authorname)."',".
-                                "'".escapeString($title)."',".
-                                "'".escapeString($text)."'";
+        static public function insert($authorID,$authorname,$subject,$text,$summary,$additionalInformation = array()){
+                $keys =         'authorID, authorname, subject, text, summary';
+                $values =       "'".escapeString($authorID)."', 
+                  			     '".escapeString($authorname)."', 
+								 '".escapeString($subject)."', 
+								 '".escapeString($text)."', 
+								 '".escapeString($summary)."'";
                 foreach ($additionalInformation as $key => $value){
-                        $keys .= ','.$key;
-                        $values .= ",'".escapeString($value)."'";
+                        $keys .= ', '.$key;
+                        $values .= ", '".escapeString($value)."'";
                 }
-                $sql = "INSERT INTO wcf".WCF_N."_news
-                        (".$keys.") VALUES (".$values.")";
-                WCF::getDB()->sendQuery($sql);
+                WCF::getDB()->sendQuery(
+                		"INSERT INTO wcf".WCF_N."_news
+                        (".$keys.") 
+                        VALUES 
+                        (".$values.")"
+                );
                 return WCF::getDB()->getInsertID();
         }
 
@@ -135,22 +133,24 @@ class NewsEditor extends News {
 		 * updates the news item
 		 * @param string $authorID the id of the "editor"
 		 * @param string $authorname the name of the "editor"
-		 * @param string $title
+		 * @param string $subject
 		 * @param string $text
+		 * @param string summary
 		 * @param array $additionalInformation contains key value pairs of strings
 		 */
-		public function update($authorID,$authorname,$title,$text,$additionalInformation = array()){
-			$sql = 	" UPDATE wcf".WCF_N."_news
-					  SET authorID = '".escapeString($authorID)."',
-						authorname = '".escapeString($authorname)."',
-						title = '".escapeString($title)."',
-						text = '".escapeString($text)."' ";
+		public function update($authorID,$authorname,$subject,$text,$summary,$additionalInformation = array()){
+			$update =	"UPDATE wcf".WCF_N."_news
+					  	 SET authorID 		= '".escapeString($authorID)."',
+						 	 authorname 	= '".escapeString($authorname)."',
+						 	 subject 		= '".escapeString($subject)."',
+						 	 text 			= '".escapeString($text)."',
+						 	 summary		= '".escapeString($summary)."'";
             foreach ($additionalInformation as $key => $value){
-            	$sql .= ",".$key." = '".escapeString($value)."' ";
+            	$update .= ", ".$key." = '".escapeString($value)."' ";
             }
-            $sql .= ", editCount = editCount + 1
-            		WHERE newsID = ".$this->newsID;
-            WCF::getDB()->sendQuery($sql);
+            $update .= ", editCount = editCount + 1
+            			WHERE newsID = ".$this->newsID;
+            WCF::getDB()->sendQuery($update);
 		}
 }
 ?>

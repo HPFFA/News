@@ -1,7 +1,7 @@
 {if $item|isset}
 
     <div class="border container-1">
-    	<h1>Title:&nbsp {@$item->title}{if $item->newsID}  (ID:&nbsp {$item->newsID}){/if}</h1>
+    	<h1>Subject:&nbsp {@$item->subject}{if $item->newsID}  (ID:&nbsp {$item->newsID}){/if}</h1>
 		{if $item->summary}
         	Summary:<br>{@$item->summary}<br><br>
 		{/if}

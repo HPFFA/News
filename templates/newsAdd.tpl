@@ -53,13 +53,13 @@
                             <legend>de.hpffa.news.editContent</legend>
 
 
-                            <div class="formElement{if $errorField == 'title'} formError{/if}">
+                            <div class="formElement{if $errorField == 'subject'} formError{/if}">
                                     <div class="formFieldLabel">
-                                            <label for="title">{lang}de.hpffa.news.title{/lang}</label>
+                                            <label for="subject">{lang}de.hpffa.news.subject{/lang}</label>
                                     </div>
                                     <div class="formField">
-                                            <input type="text" class="inputText" name="title" id="title" value="{@$title}" tabindex="{counter name='tabindex'}" />
-                                            {if $errorField == 'title'}
+                                            <input type="text" class="inputText" name="subject" id="subject" value="{@$subject}" tabindex="{counter name='tabindex'}" />
+                                            {if $errorField == 'subject'}
                                                     <p class="innerError">
                                                             {if $errorType == 'empty'}{lang}wcf.global.error.empty{/lang}{/if}
                                                     </p>
