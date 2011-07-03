@@ -38,13 +38,14 @@ class NewsEditForm extends NewsForm {
 		parent::readParameters();
 
 		if (isset($_REQUEST['newsID'])){
-			$this->newsID = intval($_REQUEST['newsID']);
+                    $this->newsID = intval($_REQUEST['newsID']);
 		} else {
 			throw new IllegalLinkException();
 		}
-		$item = new NewsEditor($this->newsID);
 		
-		$this->subject = $item->subject;
+                $item = new NewsEditor($this->newsID);
+		
+                $this->subject = $item->subject;
 		$this->authorname = $item->authorname;
 		$this->summary = $item->summary;
 		$this->text = $item->text;
@@ -55,8 +56,8 @@ class NewsEditForm extends NewsForm {
 	 * @see Form::submit()
 	 */
 	public function submit() {
-		parent::submit();
-		EventHandler::fireAction($this, 'submit');
+            parent::submit();
+            //EventHandler::fireAction($this, 'submit');
 
         if ($this->send){
             HeaderUtil::redirect('index.php?page=News');
@@ -67,9 +68,9 @@ class NewsEditForm extends NewsForm {
 	 * @see Form::validate()
 	 */
 	public function validate() {
-		parent::validate();
+            parent::validate();
 
-        $this->validateCustomText(-1,$this->maximalEditReasonLength,'editReason');
+            $this->validateTextField('editReason', 0, $this->maximalEditReasonLength);
     }
 }
 ?>
